@@ -1,7 +1,5 @@
-django-with-uwsgi-and-nginx-workshop
-====================================
-
 Setting up Django with uWSGI and Nginx
+======================================
 
 Credit: http://uwsgi-docs.readthedocs.org/en/latest/tutorials/Django_and_nginx.html
 
@@ -19,10 +17,43 @@ django-admin.py startproject --template=https://github.com/twoscoops/django-twos
 
 To test uWSGI: `uwsgi --http :8000 --wsgi-file uwsgi_test.py`
 
+***Current Stack of Components:*** Web Client <-> uWSGI <-> Python
+
+Then
 
 Change `wsgi.py` to use the local settings before run the command below.
 ```uwsgi --http :8000 --module uwsgi_tutorial.wsgi```
 
-The current stack of components is like this.
+***Current Stack of Components:*** Web Client <-> uWSGI <-> Django
 
-Web Client <-> uWSGI <-> Django
+Install Nginx using
+
+```
+sudo apt-get install nginx
+```
+
+***Current Stack of Components:*** Web Client <-> Web Server
+
+Make a symbolic link from `/etc/nginx/site-enabled/` to our Nginx configuration file:
+
+```
+sudo ln -s /vagrant/uwsgi_tutorial_nginx.conf /etc/nginx/sites-enabled/
+```
+
+Make a new folder called `/media/` to serve static files like pictures.
+
+Deploy static files, run `python manage.py collectstatic`.
+
+Restart Nginx, run `sudo service nginx restart`.
+
+Put `high-five-bear.jpg` in `/media/`.
+
+Try to access the file from the browser.
+
+Run our Django app with uWSGI and Nginx.
+
+We will configure uWSGI to run with a `.ini` file.
+
+Use `uwsgi_tutorial_uwsgi.ini`.
+
+Run `uwsgi --ini /vagrant/uwsgi_tutorial_uwsgi.ini`.
